@@ -5,6 +5,7 @@ import argparse
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-dataset', default=None)
+parser.add_argument('-config', default='NatureComm_config.json')
 parser.add_argument('-no_analysis', action='store_false')
 parser.add_argument('-no_prediction', action='store_false')
 parser.add_argument('-no_plot', action='store_false')
@@ -49,6 +50,7 @@ from os import makedirs, path, remove
 import pickle
 import random
 from shutil import copyfile, copytree, rmtree
+import simplejson
 import subprocess
 import time
 
@@ -105,65 +107,68 @@ demographic_factor_names = ['Drug Use',
 
 
                                       
-subsets = [{'name': 'task', 
-            'regex': 'task',
-            'oblimin_cluster_names': ['Conflict Processing',
-                                      'Information Processing',
-                                      'Shifting',
-                                      'Speeded Information Processing',
-                                      'Inhibition-Related Threshold',
-                                      'Caution',
-                                      'Perc/Resp',
-                                      'Inhibition-Related Perc/Resp',
-                                      'NA1',
-                                      'Discounting',
-                                      'NA2',
-                                      'Cold/Model-Based',
-                                      'Hot/Model-Free',
-                                      'NA3',
-                                      'NA4'],
-            'oblimin_factor_names': ['Speeded IP', 'Strategic IP', 
-                                     'Perc / Resp','Caution', 
-                                     'Discounting']
-                                     ,
-            'varimax_cluster_names': None,
-            'varimax_factor_names': ['Speeded IP', 'Strategic IP', 
-                                     'Perc / Resp',  'Caution', 
-                                     'Discounting'],
-            'predict': True},
-            {'name': 'survey',
-             'regex': 'survey',
-             'oblimin_cluster_names': ['Financial Risk-Taking',
-                                       'Eating',
-                                       'Behavioral Approach',
-                                       'Behavioral Inhibition',
-                                       'Mindfulness',
-                                       'Impulsivity',
-                                       'Goal-Direcedness',
-                                       'Ethical/Health Risk-Taking',
-                                       'Risk Perception',
-                                       'Sensation Seeking',
-                                       'Sociability',
-                                       'Reward Sensitivity'],
-             'oblimin_factor_names':  ['Sensation Seeking', 'Emotional Control',  
-                                   'Mindfulness', 'Impulsivity',
-                                   'Reward Sensitivity', 'Goal-Directedness', 
-                                   'Risk Perception', 'Eating Control', 
-                                   'Ethical Risk-Taking', 'Social Risk-Taking',
-                                   'Financial Risk-Taking', 'Agreeableness'],
-            'varimax_cluster_names': None,
-            'varimax_factor_names': None,
-             'predict': True},
-             {'name': 'main_subset', 
-            'regex': 'main',
-            'oblimin_cluster_names': [],
-            'oblimin_factor_names': [],
-            'predict': False},
-             {'name': 'all', 
-              'regex': '.',
-              'oblimin_cluster_names': [],
-              'oblimin_factor_names': [],
-              'predict': False}]
+# subsets = [{'name': 'task', 
+#             'regex': 'task',
+#             'oblimin_cluster_names': ['Conflict Processing',
+#                                       'Information Processing',
+#                                       'Shifting',
+#                                       'Speeded Information Processing',
+#                                       'Inhibition-Related Threshold',
+#                                       'Caution',
+#                                       'Perc/Resp',
+#                                       'Inhibition-Related Perc/Resp',
+#                                       'NA1',
+#                                       'Discounting',
+#                                       'NA2',
+#                                       'Cold/Model-Based',
+#                                       'Hot/Model-Free',
+#                                       'NA3',
+#                                       'NA4'],
+#             'oblimin_factor_names': ['Speeded IP', 'Strategic IP', 
+#                                      'Perc / Resp','Caution', 
+#                                      'Discounting']
+#                                      ,
+#             'varimax_cluster_names': None,
+#             'varimax_factor_names': ['Speeded IP', 'Strategic IP', 
+#                                      'Perc / Resp',  'Caution', 
+#                                      'Discounting'],
+#             'predict': True},
+#             {'name': 'survey',
+#              'regex': 'survey',
+#              'oblimin_cluster_names': ['Financial Risk-Taking',
+#                                        'Eating',
+#                                        'Behavioral Approach',
+#                                        'Behavioral Inhibition',
+#                                        'Mindfulness',
+#                                        'Impulsivity',
+#                                        'Goal-Direcedness',
+#                                        'Ethical/Health Risk-Taking',
+#                                        'Risk Perception',
+#                                        'Sensation Seeking',
+#                                        'Sociability',
+#                                        'Reward Sensitivity'],
+#              'oblimin_factor_names':  ['Sensation Seeking', 'Emotional Control',  
+#                                    'Mindfulness', 'Impulsivity',
+#                                    'Reward Sensitivity', 'Goal-Directedness', 
+#                                    'Risk Perception', 'Eating Control', 
+#                                    'Ethical Risk-Taking', 'Social Risk-Taking',
+#                                    'Financial Risk-Taking', 'Agreeableness'],
+#             'varimax_cluster_names': None,
+#             'varimax_factor_names': None,
+#              'predict': True},
+#              {'name': 'main_subset', 
+#             'regex': 'main',
+#             'oblimin_cluster_names': [],
+#             'oblimin_factor_names': [],
+#             'predict': False},
+#              {'name': 'all', 
+#               'regex': '.',
+#               'oblimin_cluster_names': [],
+#               'oblimin_factor_names': [],
+#               'predict': False}]
+config_file = path.join(basedir, 'dimensional_structure', args.config)
+subsets = simplejson.load(open(config_file,'r')) 
+
 results = None
 all_results = None
 ID = str(random.getrandbits(16)) 
@@ -196,9 +201,13 @@ for subset in subsets:
             results.run_EFA_analysis(rotate=rotate, 
                                      verbose=verbose, 
                                      bootstrap=bootstrap)
+            # if dimensionality is specified, use it instead of the calculated - ADDED BY IAN FOR REPLICATION PROJECT
+            # optimal dimensionality
+            if subset['dimensionality'] is not None:
+                results.EFA.results['num_factors'] = subset['dimensionality'] 
             results.run_clustering_analysis(rotate=rotate, 
                                             verbose=verbose, 
-                                            run_graphs=False)
+                                            run_graphs=False)              
             c = results.EFA.get_c()
             # name factors and clusters
             factor_names = subset.get('%s_factor_names' % rotate, None)
@@ -304,7 +313,7 @@ for subset in subsets:
             drop1, drop2 = drop_list.get((name, rotate), (None, None))
             plot_HCA(results, HCA_plot_dir, rotate=rotate,
                      drop_list = drop1, double_drop_list=drop2,
-                     size=size, dpi=dpi, ext=ext)
+                     size=size, dpi=dpi, verbose=verbose, ext='png')
         # Plot prediction
         if results.get_prediction_files() is not None:
             target_order = results.DA.reorder_factors(results.DA.get_loading()).columns

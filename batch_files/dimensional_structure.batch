@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name={SUBSET}_{CLASSIFIER}_dim_struct
-#SBATCH --output=.out/{SUBSET}_{CLASSIFIER}_dim_struct.job.out
-#SBATCH --error=.err/{SUBSET}_{CLASSIFIER}_dim_struct.job.err
+#SBATCH --job-name={SUBSET}_{CLASSIFIER}_dim_struct_{CONFIG}
+#SBATCH --output=.out/{SUBSET}_{CLASSIFIER}_dim_struct_{CONFIG}-%A.job.out
+#SBATCH --error=.err/{SUBSET}_{CLASSIFIER}_dim_struct_{CONFIG}-%A.job.err
 #SBATCH --time=80:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -9,8 +9,7 @@
 # SBATCH --mem=64000
 #SBATCH -p russpold
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=ieisenbe@stanford.edu
-module load singularity
+#SBATCH --mail-user=henrymj@stanford.edu
 export PYTHONPATH=""
 # scratch is automatically mounted
 img=`sed '2q;d' singularity_config.txt`
@@ -18,12 +17,23 @@ base_singularity=`sed '6q;d' singularity_config.txt`
 singularity_loc=${base_singularity}/$img
 data_loc=`sed '4q;d' singularity_config.txt`Data
 results_loc=`sed '4q;d' singularity_config.txt`Results
-script_loc=`sed '4q;d' singularity_config.txt`ideological_prediction
+utils_loc=`sed '4q;d' singularity_config.txt`selfregulation
+script_loc=`sed '4q;d' singularity_config.txt`dimensional_structure
 
-if [ "{CLASSIFIER}" == "NONE" ]; then
-    singularity exec -B ${script_loc}:/SRO/dimensional_structure -B ${data_loc}:/SRO/Data -B ${results_loc}:/Results ${singularity_loc} \
-        python /SRO/dimensional_structure/generate_results.py -bootstrap -subset {SUBSET} -no_prediction -no_plot -no_group_plot -no_group_analysis 
+if [ "{CONFIG}" == "NONE" ]; then
+    if [ "{CLASSIFIER}" == "NONE" ]; then
+        singularity -v exec -B ${script_loc}:/SRO/dimensional_structure -B ${utils_loc}:/SRO/selfregulation -B ${data_loc}:/SRO/Data -B ${results_loc}:/SRO/Results ${singularity_loc} \
+            python /SRO/dimensional_structure/generate_results.py -bootstrap -subset {SUBSET} -no_prediction -no_plot -no_group_plot -no_group_analysis 
+    else
+        singularity exec -B ${script_loc}:/SRO/dimensional_structure -B ${utils_loc}:/SRO/selfregulation -B ${data_loc}:/SRO/Data -B ${results_loc}:/SRO/Results ${singularity_loc} \
+        python /SRO/dimensional_structure/generate_results.py -bootstrap -shuffle_repeats 2500 -subset {SUBSET} -classifier {CLASSIFIER} -no_analysis -no_plot -no_group_plot -no_group_analysis
+    fi
 else
-    singularity exec -B ${script_loc}:/SRO/dimensional_structure -B ${data_loc}:/SRO/Data -B ${results_loc}:/Results ${singularity_loc} \
-    python /SRO/dimensional_structure/generate_results.py -bootstrap -shuffle_repeats 2500 -subset {SUBSET} -classifier {CLASSIFIER} -no_analysis -no_plot -no_group_plot -no_group_analysis
+    if [ "{CLASSIFIER}" == "NONE" ]; then
+        singularity -v exec -B ${script_loc}:/SRO/dimensional_structure -B ${utils_loc}:/SRO/selfregulation -B ${data_loc}:/SRO/Data -B ${results_loc}:/SRO/Results ${singularity_loc} \
+            python /SRO/dimensional_structure/generate_results.py -bootstrap -subset {SUBSET} -config {CONFIG} -no_prediction -no_plot -no_group_plot -no_group_analysis 
+    else
+        singularity exec -B ${script_loc}:/SRO/dimensional_structure -B ${utils_loc}:/SRO/selfregulation -B ${data_loc}:/SRO/Data -B ${results_loc}:/SRO/Results ${singularity_loc} \
+        python /SRO/dimensional_structure/generate_results.py -bootstrap -shuffle_repeats 2500 -subset {SUBSET} -config {CONFIG} -classifier {CLASSIFIER} -no_analysis -no_plot -no_group_plot -no_group_analysis
+    fi
 fi

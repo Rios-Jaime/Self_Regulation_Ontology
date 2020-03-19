@@ -9,8 +9,7 @@
 # SBATCH --mem=64000
 #SBATCH -p russpold
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=ieisenbe@stanford.edu
-module load singularity
+#SBATCH --mail-user=henrymj@stanford.edu
 export PYTHONPATH=""
 # scratch is automatically mounted
 img=`sed '2q;d' singularity_config.txt`
@@ -20,7 +19,7 @@ data_loc=`sed '4q;d' singularity_config.txt`Data
 results_loc=`sed '4q;d' singularity_config.txt`Results
 script_loc=`sed '4q;d' singularity_config.txt`ideological_prediction
 
-singularity exec -B ${script_loc}:/SRO/ideological_prediction -B ${data_loc}:/SRO/Data -B ${results_loc}:/Results ${singularity_loc} \
-    python /SRO/ideological_prediction/ideological_prediction.py -shuffle_repeats 1000
+singularity exec -B ${script_loc}:/SRO/ideological_prediction -B ${data_loc}:/SRO/Data -B ${results_loc}:/SRO/Results ${singularity_loc} \
+    python /SRO/ideological_prediction/run_ideological_prediction.py -shuffle_repeats 1000
 
 

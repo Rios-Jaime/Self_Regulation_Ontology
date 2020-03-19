@@ -1,16 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=calc_DV_{EXP_ID}_{SUBSET}_refit
-#SBATCH --output=/oak/stanford/groups/russpold/users/ieisenbe/uh2/behavioral_data/{SUBSET}_output/hddm_refits/.out/calc_DV_{EXP_ID}_{SUBSET}_refit.out
-#SBATCH --error=/oak/stanford/groups/russpold/users/ieisenbe/uh2/behavioral_data/{SUBSET}_output/hddm_refits/.err/calc_DV_{EXP_ID}_{SUBSET}_refit.err
+#SBATCH --output=/oak/stanford/groups/russpold/users/henrymj/uh2/Self_Regulation_Ontology/Data/{SUBSET}_output/hddm_refits/.out/calc_DV_{EXP_ID}_{SUBSET}_refit.out
+#SBATCH --error=/oak/stanford/groups/russpold/users/henrymj/uh2/Self_Regulation_Ontology/Data/{SUBSET}_output/hddm_refits/.err/calc_DV_{EXP_ID}_{SUBSET}_refit.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=zenkavi@stanford.edu
+#SBATCH --mail-user=henrymj@stanford.edu
 #SBATCH -p russpold
 #SBATCH --time=168:00:00
 module load system
-module load singularity
+# module load singularity
 export PYTHONPATH=""
 # scratch is automatically mounted
 img=`sed '2q;d' singularity_config.txt`
@@ -18,7 +18,7 @@ base_singularity=`sed '6q;d' singularity_config.txt`
 singularity_loc=${base_singularity}/$img
 data_loc=`sed '8q;d' singularity_config.txt`
 # on OAK
-output_loc=/oak/stanford/groups/russpold/users/ieisenbe/uh2/behavioral_data/{SUBSET}_output/hddm_refits
+output_loc=/oak/stanford/groups/russpold/users/henrymj/uh2/Self_Regulation_Ontology/Data/{SUBSET}_output/hddm_refits
 
 
 

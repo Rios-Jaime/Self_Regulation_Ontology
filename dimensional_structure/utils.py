@@ -461,9 +461,11 @@ def transfer_scores(data, results, rotate='oblimin'):
     negative_skewed = [i.replace('.ReflogTr', '') for i in ref_data.columns if ".ReflogTr" in i]
     DVs = [i.replace('.logTr','').replace('.ReflogTr','') for i in ref_data.columns]
     data = data.loc[:, DVs]
+    print('using correct transfer_scores')
     data = transform_remove_skew(data,
                                  positive_skewed=positive_skewed,
-                                 negative_skewed=negative_skewed)
+                                 negative_skewed=negative_skewed,
+                                 drop_failed=False)
     data = remove_outliers(data)
     data_imputed, error = missForest(data)
     subset = data_imputed.loc[:, loadings.index]

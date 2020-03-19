@@ -306,10 +306,13 @@ def heatmap(df):
     return fig
 
 def save_figure(fig, loc, save_kws=None):
+    print(fig)
+    print(loc)
     """ Saves figure in location and creates directory tree if needed """
     if save_kws is None:
         save_kws = {}
     directory = os.path.dirname(loc)
+    print(directory)
     if directory != "":
         os.makedirs(directory, exist_ok=True)
     fig.savefig(loc, **save_kws)

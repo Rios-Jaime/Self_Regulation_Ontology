@@ -141,7 +141,7 @@ def plot_subbranch(target_color, cluster_i, tree, loading, cluster_sizes, title=
     length = N*.05
     dendro_size = [0,.746,length,.12]
     heatmap_size = [0,.5,length,.25]
-    fig = plt.figure(figsize=(size,size*2))
+    fig = plt.figure(figsize=(size*2,size*4))
     dendro_ax = fig.add_axes(dendro_size) 
     heatmap_ax = fig.add_axes(heatmap_size)
     cbar_size = [length+.22, .5, .05, .25]
@@ -212,8 +212,13 @@ def plot_subbranch(target_color, cluster_i, tree, loading, cluster_sizes, title=
     dendro_ax.spines['bottom'].set_visible(False)
     dendro_ax.spines['left'].set_visible(False)
     if plot_loc is not None:
-        save_figure(fig, plot_loc, {'bbox_inches': 'tight', 'dpi': dpi})
-        plt.close()
+        try:
+            print('about to crash? - dpi: ' + str(dpi))
+            save_figure(fig, plot_loc, {'bbox_inches': 'tight', 'dpi': dpi})
+            plt.close()
+        except ValueError:
+            print('something when wrong with that plot')
+            plt.close()
     else:
         return fig
 
@@ -268,9 +273,12 @@ def plot_subbranches(results, rotate='oblimin', EFA_clustering=True,
     # titles = 
     figs = []
     for cluster_i in cluster_range:
+        print(cluster_i)
         if plot_dir:
             filey = 'cluster_%s.%s' % (str(cluster_i).zfill(2), ext)
+            print('filey: ' + filey)
             plot_loc = path.join(plot_dir, function_directory, filey)
+            print('plot_loc: ' + plot_loc)
         fig = plot_subbranch(colors[cluster_i], cluster_i, tree, 
                              ordered_loading, cluster_sizes,
                              title=cluster_labels[cluster_i], 
@@ -312,11 +320,13 @@ def plot_results_dendrogram(results, rotate='oblimin', hierarchical_EFA=False,
     name = inp
     if title is None:
         title = subset.title() + " Dependent Variable Structure"
+        print('title: ' + title)
     if plot_dir:
         filename =  path.join(plot_dir, 'dendrogram_%s.%s' % (name, ext))
     else:
         filename = None
-
+    print('OG dendrogram plot')
+    print(plot_dir)
     return plot_dendrogram(loading, clustering, 
                     title=title, 
                     size=size, 
@@ -417,6 +427,7 @@ def plot_dendrogram(loading, clustering, title=None,
         cbar_ax.tick_params(labelsize=size*heat_size[1]*25/c, length=0, pad=size/2)
         cbar_ax.set_ylabel('Factor Loading', rotation=-90, 
                        fontsize=size*heat_size[1]*30/c, labelpad=size*2)
+        
         # add lines to heatmap to distinguish clusters
         if break_lines == True:
             xlim = ax2.get_xlim(); 
@@ -823,6 +834,7 @@ def plot_cluster_sankey(results):
 
 def plot_HCA(results, plot_dir=None, rotate='oblimin', 
              size=10, dpi=300, verbose=False, ext='png', **dendrogram_kws):
+    size=10 # ADDED BY HJ
     if plot_dir:
         plot_rotate_dir = path.join(plot_dir, rotate)
     else:
@@ -843,6 +855,7 @@ def plot_HCA(results, plot_dir=None, rotate='oblimin',
     if verbose: print("Plotting dendrogram subbranches")
     plot_subbranches(results, rotate=rotate,  EFA_clustering=False,
                      size=size/2, plot_dir=plot_dir, ext=ext, dpi=dpi)
+    print('EFA_CLUSTERING WAS FALSE, ONTO TRUE')
     plot_subbranches(results, rotate=rotate,  EFA_clustering=True,
                      size=size/2, plot_dir=plot_rotate_dir, ext=ext, dpi=dpi)
     if verbose: print("Plotting silhouette analysis")

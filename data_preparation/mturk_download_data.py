@@ -13,7 +13,7 @@ from selfregulation.utils.data_preparation_utils import anonymize_data, \
 from selfregulation.utils.utils import get_info
 
 parser = argparse.ArgumentParser(description='fMRI Analysis Entrypoint Script.')
-parser.add_argument('--job', help='Specifies what part of the script to run. Options: download, extras, post, all").', default='post')
+parser.add_argument('--job', help='Specifies what part of the script to run. Options: download, extras, post, all").', default='all')
 parser.add_argument('--sample', help='Specifies what sample to run. Options: "discovery", "validation", "incomplete").', nargs='+', default=['discovery', 'validation', 'incomplete'])
 
 # get options
@@ -47,7 +47,7 @@ if job == 'download' or job == "all":
     # ********* Download Data**********************
     #**************************************************  
     #load Data
-    f = open(token)
+    f = open('../expfactory_token.txt')
     access_token = f.read().strip()  
     data = download_data(data_dir, access_token, filters = filters,  
     	battery = 'Self Regulation Battery', 

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=mturk_save
-#SBATCH --output=.out/mturk_save.job.out
-#SBATCH --error=.err/mturk_save.job.err
+#SBATCH --output=.out/mturk_save-%A.job.out
+#SBATCH --error=.err/mturk_save-%A.job.err
 #SBATCH --time=8:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -9,7 +9,7 @@
 # SBATCH --mem=64000
 #SBATCH -p russpold
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=ieisenbe@stanford.edu
+#SBATCH --mail-user=henrymj@stanford.edu
 export PYTHONPATH=""
 # scratch is automatically mounted
 img=`sed '2q;d' singularity_config.txt`
@@ -20,7 +20,7 @@ output_loc=`sed '4q;d' singularity_config.txt`Data/
 reference_loc=`sed '4q;d' singularity_config.txt`references
 script_loc=`sed '4q;d' singularity_config.txt`data_preparation
 
-singularity exec -B ${script_loc}:/SRO/data_preparation -B ${data_loc}:/Data -B ${output_loc}:/SRO/Data -B ${reference_loc}:/SRO/references ${singularity_loc} \
+singularity exec -B ${script_loc}:/SRO/data_preparation -B ${data_loc}:/SRO/Data -B ${output_loc}:/SRO/Data -B ${reference_loc}:/SRO/references ${singularity_loc} \
     python /SRO/data_preparation/save_data.py
 
 

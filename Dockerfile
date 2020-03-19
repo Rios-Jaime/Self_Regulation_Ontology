@@ -54,7 +54,8 @@ RUN pip install \
   seaborn==0.7.1 \
   statsmodels==0.8.0 \
   svgutils==0.3.0 \
-  jupyter
+  jupyter \
+  jupyterlab
 
 RUN pip install hdbscan==0.8.10 
 # install hddm
@@ -107,3 +108,12 @@ RUN pip install -e /SRO
 RUN export PYTHONNOUSERSITE=1
 
 CMD ["/bin/bash"]
+
+# Expose Jupyter port & cmd
+
+EXPOSE 8888
+CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser \
+    --notebook-dir=/SRO --allow-root \
+    --notebook-dir="/" \
+    --NotebookApp.token='' \
+    --NotebookApp.password=''

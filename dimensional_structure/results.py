@@ -456,7 +456,10 @@ class HCA_Analysis():
     def name_clusters(self, names, inp):
         cluster_labels = self.results[inp]['labels']
         num_clusters = np.max(cluster_labels)
-        assert len(names) == num_clusters
+        #assert len(names) == num_clusters
+        if len(names)!=num_clusters:
+            names = [('cluster%s' %i) for i in range(num_clusters)]
+	#names = [('cluster%s'%i) for i in range(num_clusters)]
         self.results[inp]['cluster_names'] = names
         
     def run(self, data, EFA, cluster_EFA=False, rotate='oblimin',

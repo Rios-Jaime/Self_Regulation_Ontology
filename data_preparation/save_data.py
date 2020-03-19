@@ -147,9 +147,11 @@ for data,directory, DV_df, valence_df in datasets:
         readme_lines += ["meaningful_variables_hddm.csv: subset of exhaustive data to only meaningful variables with rt/acc parameters removed (replaced by hddm DDM params)\n\n"]
         
         # save files that are selected for use
-        selected_variables = hddm_subset
+        # selected_variables = hddm_subset #OG
+        selected_variables = noDDM_subset #HENRY 
         selected_variables.to_csv(path.join(directory, 'meaningful_variables.csv'))
-        readme_lines += ["meaningful_variables.csv: Same as meaningful_variables_hddm.csv\n\n"]
+        # readme_lines += ["meaningful_variables.csv: Same as meaningful_variables_hddm.csv\n\n"] #OG
+        readme_lines += ["meaningful_variables.csv: Same as meaningful_variables_noDDM.csv\n\n Used for Replication Study.\n\n"] #HENRY
         
         # clean data
         selected_variables_clean = transform_remove_skew(selected_variables)

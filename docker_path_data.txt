@@ -1,0 +1,8 @@
+/Users/henrymj/Documents/Self_Regulation_Ontology/Data:/SRO/Data
+
+
+docker run --entrypoint /bin/bash -v /Users/henrymj/Documents/Self_Regulation_Ontology/Data:/SRO/Data -it sro
+
+
+
+docker run --rm --entrypoint /bin/bash --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology,dst=/SRO --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Data,dst=/SRO/Data -ti -p 8888:8888 sro
