@@ -1,8 +1,32 @@
 /Users/henrymj/Documents/Self_Regulation_Ontology/Data:/SRO/Data
 
 
+<<<<<<< HEAD
+docker run --entrypoint /bin/bash -v /Users/henrymj/Documents/EFA:/SRO/ -it -p 8888:8888 sro
+
+docker run --entrypoint /bin/bash -v /Users/henrymj/Documents/Self_Regulation_Ontology/Data:/SRO/Data -it sro
+
+
+docker run --rm --entrypoint /bin/bash --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology,dst=/SRO --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Data,dst=/Data --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Results,dst=/Results -ti -p 8888:8888 sro
+
+
+docker run --rm --entrypoint /bin/bash --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology,dst=/SRO --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Data,dst=/SRO/Data --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Results,dst=/SRO/Results -ti -p 8888:8888 sro
+
+docker run --rm --entrypoint /bin/bash -ti -p 8888:8888 sro
+
+
+for plot_dim_struct
+
+singularity exec -B ${data_loc}:/SRO/Data -B ${results_loc}:/SRO/Results -B ${utils_loc}:/SRO/selfregulation -B ${dim_loc}:/SRO/dimensional_structure ${singularity_loc} \
+    python /SRO/dimensional_structure/generate_results.py -bootstrap -plot_backend Agg -shuffle_repeats 2000 -subset task survey -no_prediction -no_analysis -dpi 600
+
+
+
+docker run --rm --entrypoint /bin/bash --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Data,dst=/SRO/Data --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Results,dst=/SRO/Results --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/selfregulation/selfregulation,dst=/SRO/selfregulation --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/dimensional_structure/dimensional_structure,dst=/SRO/dimensional_structure -ti -p 8888:8888 sro
+=======
 docker run --entrypoint /bin/bash -v /Users/henrymj/Documents/Self_Regulation_Ontology/Data:/SRO/Data -it sro
 
 
 
 docker run --rm --entrypoint /bin/bash --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology,dst=/SRO --mount type=bind,src=/Users/henrymj/Documents/Self_Regulation_Ontology/Data,dst=/SRO/Data -ti -p 8888:8888 sro
+>>>>>>> 7c37f9c012f5f17c869ea811d1bb7a1e0c45d033
