@@ -243,6 +243,7 @@ for subset in subsets:
         # ***************************** saving ****************************************
         prediction_dir = path.join(results.get_output_dir(), 'prediction_outputs')
         new_dir = path.join(path.dirname(results.get_output_dir()), 'prediction_outputs')
+        makedirs(new_dir, exist_ok=True) #ADDED TO PREVENT CRASHING
         for classifier in classifiers:
             for change_flag in [False, True]:
                 for subset in ['varimax', 'oblimin', 'raw']:
@@ -339,7 +340,7 @@ for subset in subsets:
                                                     classifier=classifier, 
                                                     plot_dir=rotate_plot_dir,
                                                     dpi=dpi,
-                                                    ext=ext,
+                                                    ext='png', #CHANGED FROM ext=ext
                                                     size=size)
                             """
                             print("** Plotting Change Prediction, classifier: %s, EFA: %s **" % (classifier, EFA))
@@ -427,7 +428,7 @@ if group_analysis == True:
                                                             rotate='oblimin',
                                                             verbose=False)
     run_cross_prediction(all_results)
-    a=subprocess.Popen('python gephi_graph_plot.py', shell=True)
+    a=subprocess.Popen('python /SRO/dimensional_structure/gephi_graph_plot.py', shell=True)
 
 if group_plot == True:
     if verbose:
@@ -476,7 +477,7 @@ if group_plot == True:
         plot_cross_EFA_retest(all_results, rotate=rotate, annot_heatmap=True, 
                               size=size, ext=ext, dpi=dpi, plot_dir=plot_file)
     # plot analysis overview
-    a=subprocess.Popen('python analysis_overview_plot.py -dataset %s -dpi %s -ext %s -size %s' \
+    a=subprocess.Popen('python /SRO/dimensional_structure/analysis_overview_plot.py -dataset %s -dpi %s -ext %s -size %s' \
                            % (datafile, dpi, ext, 4.6),
                            shell=True)
     
@@ -554,7 +555,9 @@ if run_plot or group_plot:
             }
     
     paper_dir = path.join(basedir, 'Results', 'Psych_Ontology_Paper')
-    figure_lookup = shortened_lookup
+    makedirs(paper_dir, exist_ok = True)
+
+    figure_lookup = exhaustive_lookup #CHANGED BY HJ TO GET EVERYTHING
     for filey in figure_lookup.keys():
         remove_orig = False
         figure_num = figure_lookup[filey].split('_')[0]

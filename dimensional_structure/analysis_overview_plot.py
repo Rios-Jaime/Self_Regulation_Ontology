@@ -52,7 +52,8 @@ if args.plot_file is None:
     plot_file = path.dirname(results['task'].get_plot_dir())
 else:
     plot_file = args.plot_file
-
+prit('analysis_overiew_plot stuff')
+print(plot_file)
 
 # plot
 f = plt.figure(figsize=(size, size))

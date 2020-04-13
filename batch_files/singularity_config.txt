@@ -1,5 +1,5 @@
 # sro_prep singularity image
-sro_matplotlib-2020-03-03-ccfbbe62f35a.simg
+sro_matplotlib-2020-03-25-aca926033fd7.simg
 # location of SRO directory
 /oak/stanford/groups/russpold/users/henrymj/uh2/Self_Regulation_Ontology/
 # location of singularity images

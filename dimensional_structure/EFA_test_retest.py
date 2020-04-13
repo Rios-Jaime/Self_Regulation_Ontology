@@ -121,7 +121,10 @@ def plot_EFA_retest(combined, size=4.6, dpi=300,
                 cbar_kws={'orientation': 'vertical',
                           'ticks': [-1, 0, 1]}); 
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+    print('LABELS THAT WORK??????')
+    print(ax.get_yticklabels())
     ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+    print(ax.get_yticklabels())
     ax.tick_params(labelsize=size/len(corr)*40)
     
     # format cbar axis
@@ -213,7 +216,10 @@ def plot_cross_EFA_retest(all_results, rotate='oblimin', size=4.6, dpi=300,
     axes = fig.get_axes()
     cbar_ax = fig.add_axes([.2, .03, .2, .02])
     # get fontsize for factor labels
+    print('CROSS PLOT')
+    print( '*'*79)
     for i, (name,results) in enumerate(all_results.items()):
+        print(name)
         combined, *the_rest = EFA_retest_fun(results, rotate=rotate)
         color = list(colors.get(name, [.2,.2,.2])) + [.8]
         ax2 = axes[i*2]; ax = axes[i*2+num_rows//2]
@@ -270,7 +276,10 @@ def plot_cross_EFA_retest(all_results, rotate='oblimin', size=4.6, dpi=300,
                             
         ax2.set_xticklabels('')
         ax2.set_yticks(np.arange(.5, num_labels+.5))
-        ax2.set_yticklabels(combined.columns[:num_labels], rotation=0, va='center')
+        # ax2.set_yticklabels(combined.columns[:num_labels], rotation=0, va='center') #OLD LABELING
+        ax2.set_yticklabels(ax2.get_yticklabels(), rotation=0, va='center')
+        print('heatmap labels:')
+        print(combined.columns[:num_labels])
         ax2.tick_params(axis='y', labelsize=min(size/num_labels/num_rows*24, size*1.6), 
                         pad=size/2, length=0)
         ax2.tick_params(axis='x', length=0, pad=size/2)
@@ -286,6 +295,7 @@ def plot_cross_EFA_retest(all_results, rotate='oblimin', size=4.6, dpi=300,
                 rotation=-90,
                 size=size/num_rows*5,
                 fontweight='bold')
+        print(name.title())
         place_letter(ax2, letters.pop(0), fontsize=size*9/4.6)
         place_letter(ax, letters.pop(0), fontsize=size*9/4.6)
         [i.set_linewidth(size*.1) for i in ax.spines.values()]

@@ -9,7 +9,8 @@ import numpy as np
 from os import makedirs, path
 import pandas as pd
 import pickle
-from sklearn.covariance import GraphLassoCV
+from sklearn.covariance import GraphLassoCV #old
+from sklearn.covariance import GraphicalLassoCV as GraphLassoCV #NEW from henry
 from sklearn.preprocessing import scale
 
 from dimensional_structure.graph_utils import Graph_Analysis

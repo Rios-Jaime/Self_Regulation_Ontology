@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH --job-name=test_env
+#SBATCH --output=.out/test_env-%A.job.out
+#SBATCH --error=.err/test_env-%A.job.err
+#SBATCH --time=1:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=8
+# SBATCH --mem=8000
+#SBATCH -p russpold
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=henrymj@stanford.edu
+export PYTHONPATH=""
+# scratch is automatically mounted
+img=sro-2020-01-05-0cdac0718337.simg
+base_singularity=`sed '6q;d' singularity_config.txt`
+singularity_loc=${base_singularity}/$img
+data_loc=`sed '4q;d' singularity_config.txt`Data
+results_loc=`sed '4q;d' singularity_config.txt`Results
+utils_loc=`sed '4q;d' singularity_config.txt`selfregulation
+script_loc=`sed '4q;d' singularity_config.txt`test_env
+
+
+singularity -v exec -B ${script_loc}:/SRO/dimensional_structure -B ${utils_loc}:/SRO/selfregulation -B ${data_loc}:/SRO/Data  ${singularity_loc} \
+    python /SRO/dimensional_structure/offend_ross.py 
+

@@ -142,12 +142,14 @@ def plot_prediction(predictions, comparison_predictions,
         # and insample
         R2s = [i[metric] for i in comparison_predictions[k]['scores_insample']]
         R2_95 = np.percentile(R2s, 95)
+        # R2_95 = np.nanpercentile(R2s, 95) #option 1: FIX PROPOSED BY HENRY
         insample_shuffled_r2s.append((k,R2_95))
         
     # convert nans to 0
     r2s = [(i, k) if k==k else (i,0) for i, k in r2s]
     insample_r2s = [(i, k) if k==k else (i,0) for i, k in insample_r2s]
     shuffled_r2s = [(i, k) if k==k else (i,0) for i, k in shuffled_r2s]
+    # insample_shuffled_r2s = [(i, k) if k==k else (i,0) for i, k in insample_shuffled_r2s] #option 2: HENRY ADDING THIS TO DROP NANS?!?
     
     # plot
     shuffled_grey = [.3,.3,.3]
@@ -291,6 +293,8 @@ def plot_prediction_scatter(results, target_order=None, EFA=True, change=False,
                                                  change=change,
                                                  classifier=classifier,
                                                  rotate=rotate)
+    print('scatter stuff!')
+    print(plot_dir)
     if predictions is None:
         print('No prediction object found!')
         return
@@ -335,6 +339,7 @@ def plot_prediction_scatter(results, target_order=None, EFA=True, change=False,
             filename = 'EFA%s_%s_prediction_scatter.%s' % (changestr, classifier, ext)
         else:
             filename = 'IDM%s_%s_prediction_scatter.%s' % (changestr, classifier, ext)
+        print(filename)
         save_figure(fig, path.join(plot_dir, filename), 
                     {'bbox_inches': 'tight', 'dpi': dpi})
         plt.close()

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=dim_struct_plot
-#SBATCH --output=.out/dim_struct_plot.job.out
-#SBATCH --error=.err/dim_struct_plot.job.err
+#SBATCH --output=.out/dim_struct_plot-%A.job.out
+#SBATCH --error=.err/dim_struct_plot-%A.job.err
 #SBATCH --time=100:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
